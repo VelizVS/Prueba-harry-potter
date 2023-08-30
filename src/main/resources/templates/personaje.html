@@ -3,11 +3,42 @@
 
 <head>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: rgb(64, 128, 128); /* Cambiar el color de fondo */
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .filter-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
         <h1 class="mt-4">Lista de personajes</h1>
+
+        <div class="filter-container">
+            <div>
+                <label for="houseFilter">Filtrar por casa:</label>
+                <select id="houseFilter" class="form-control">
+                    <option value="">Todas</option>
+                    <option value="Gryffindor">Gryffindor</option>
+                    <option value="Hufflepuff">Hufflepuff</option>
+                    <option value="Ravenclaw">Ravenclaw</option>
+                    <option value="Slytherin">Slytherin</option>
+                </select>
+            </div>
+            <div>
+                <label for="nameFilter">Buscar por nombre:</label>
+                <input type="text" id="nameFilter" class="form-control">
+            </div>
+        </div>
 
         <table class="table">
             <thead>
@@ -19,7 +50,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="character : ${characters}">
+                <tr th:each="character : ${characters}" class="character-row">
                     <td th:text="${character.name}"></td>
                     <td th:text="${character.house}"></td>
                     <td th:text="${character.wand.get('core').asText()}"></td>
@@ -32,6 +63,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            // Filtro por casa
+            $('#houseFilter').change(function () {
+                var selectedHouse = $(this).val();
+                $('.character-row').each(function () {
+                    var characterHouse = $(this).find('td:nth-child(2)').text();
+                    if (selectedHouse === '' || selectedHouse === characterHouse) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+
+            // Búsqueda por nombre
+            $('#nameFilter').keyup(function () {
+                var searchText = $(this).val().toLowerCase();
+                $('.character-row').each(function () {
+                    var characterName = $(this).find('td:nth-child(1)').text().toLowerCase();
+                    if (characterName.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>
+
+
+
